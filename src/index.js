@@ -30,19 +30,22 @@ const posts = [{
     id: '24',
     title: 'Farmers law',
     published : 'Rihanna',
-    body: 'Why r v not talking on farmers laws'
+    body: 'Why r v not talking on farmers laws',
+    author: '1'
 },
 {
     id: '25',
     title: 'Tweet supporting Rihanna',
     published : 'Shashi Tharoor',
-    body: 'World has take keen interest on farmers that out PM'
+    body: 'World has take keen interest on farmers that out PM',
+    author: '1'
 },
 {
     id: '26',
     title: 'Biden',
     published : 'Reporter',
-    body: '46th president of usa'
+    body: '46th president of usa',
+    author: '2'
 }
 
 ]
@@ -66,6 +69,7 @@ type Post{
     title: String!
     body:String!
     published : String!
+    author: User!
 }
 `
 const resolvers={
@@ -109,6 +113,13 @@ const resolvers={
             }
         }
         
+    },
+    Post: {
+        author(parent,args,ctx,info){
+            return users.find((user) => {
+                return user.id === parent.author
+            })
+        }
     }
 }
 
