@@ -1,10 +1,43 @@
-import  location, {  getGreeting, message, name } from './myModule';
-// console.log(message);
-// console.log(name);
-// console.log(location);
-// console.log(getGreeting('Jeevan','Graphql'));
+import {GraphQLServer} from 'graphql-yoga';
 
-import addSum, {subtract} from './math';
+//schema
+//resolvers
 
-console.log(addSum(5,3));
-console.log(subtract(6,9));
+const typeDefs = `
+type Query{
+    title: String!
+    price: Int!
+    releaseYear : Int!
+    rating: Float
+    inStock: Boolean!
+
+}
+`
+const resolvers={
+    Query: {
+        title(){
+            return 'Harrypotter'
+        },
+        price(){
+            return 326
+        },
+        releaseYear(){
+            return 2013
+        },
+        rating(){
+            return null
+        },
+        inStock(){
+            return true
+        }
+    }
+}
+
+const server = new GraphQLServer({
+    typeDefs,
+    resolvers
+})
+
+server.start(()=>{
+    console.log('running in port 4000');
+})
