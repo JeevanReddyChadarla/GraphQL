@@ -3,11 +3,54 @@ import {GraphQLServer} from 'graphql-yoga';
 //schema
 //resolvers
 
+const users = [{
+    id: '1',
+    name: 'Jeevan',
+    age: 23,
+    employed: true,
+    gender: 'Male'
+},
+{
+    id: '2',
+    name: 'Chadarla',
+    age: 39,
+    employed: true,
+    gender: 'Male'   
+},
+{
+id: '3',
+name: 'Sanjay',
+age: 66,
+employed: true,
+gender: 'Male'
+},
+]
+
+const posts = [{
+    id: '24',
+    title: 'Farmers law',
+    published : 'Rihanna',
+    body: 'Why r v not talking on farmers laws'
+},
+{
+    id: '25',
+    title: 'Tweet supporting Rihanna',
+    published : 'Shashi Tharoor',
+    body: 'World has take keen interest on farmers that out PM'
+},
+{
+    id: '26',
+    title: 'Biden',
+    published : 'Reporter',
+    body: '46th president of usa'
+}
+
+]
+
 const typeDefs = `
 type Query{
-    greeting(name: String): String!
-    add(numbers: [Int!]!): Int!
-    grades : [Int!]!
+    users (query:String): [User!]!
+    posts (query: String): [Post!]!
     me: User!
     post : Post!
 }
@@ -28,27 +71,24 @@ type Post{
 const resolvers={
     Query: {
 
-        greeting(parent,args,ctx,info)
-        {
-            if(args.name){
-                return `Hello ${args.name}`
-            }
-            else{
-                return `hello`
-            }
+        users(parent,args,ctx,info){
+           if(!args.query){
+               return users
+           }
+           return users.filter((user) => {
+            return user.name.toLowerCase().includes(args.query.toLowerCase())
+           })
         },
-        add(parent, args, ctx, info)
-        {  
-                if(args.numbers.length === 0){
-                    return 0
-                }
-                return args.numbers.reduce((accumulator, currentValue) => {
-                    return accumulator+currentValue
-                })
+
+        posts(parent, args,ctx,info){
+           if(!args.query){
+               return posts
+           }
+           return posts.filter((post) => {
+               return post.body.toLowerCase().includes(args.query.toLowerCase())
+           })
         },
-        grades(parent,args,ctx,info){
-            return [98,35,63]
-        },
+
         me(){
             return{
                 id: "jee112",
