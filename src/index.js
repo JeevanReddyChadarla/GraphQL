@@ -85,7 +85,9 @@ const resolvers={
                return posts
            }
            return posts.filter((post) => {
-               return post.body.toLowerCase().includes(args.query.toLowerCase())
+               const bodyMatch =  post.body.toLowerCase().includes(args.query.toLowerCase())
+               const titleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+               return bodyMatch || titleMatch;
            })
         },
 
