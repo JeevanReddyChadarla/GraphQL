@@ -106,7 +106,7 @@ const resolvers={
         },
         post(){
             return{
-                id: "postnumber123445667",
+                id: "postnumber1234567",
                 title: "Farmers Protest",
                 body: "Why are we not talking about the farmers protest in New Delhi",
                 published: "By Rihanna"
