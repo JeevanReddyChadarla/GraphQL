@@ -196,13 +196,16 @@ import {GraphQLServer} from 'graphql-yoga';
 const typeDefs = 
     `
     type Query {
-        
+        greetings(name: String):String!
+        add(numbers: [Int]!): Int!
+        grades: [Int!]!
         title: String!
         price: Float!
         releaseYear: Int!
         rating: Float
         inStock : Boolean!
         me: User!
+        post: Post!
     }
     type User{
         id: ID!
@@ -212,12 +215,37 @@ const typeDefs =
         gpa: Float
 
     }
+    type Post{
+        id: ID!
+        title: String!
+        body: String!
+        published : Boolean!
+    }
     `
 
 // resolvers
 
 const resolvers = {
     Query: {
+        greetings(parent,args,ctx,info){
+            if(args.name){
+                return `Hello ${args.name}`
+            }
+            else{
+                return 'Hello'
+            }
+        },
+       add(parent,args,ctx,info){
+           if(args.numbers.length === 0){
+               return 0
+           }
+        return args.numbers.reduce((acc,curr)=>{
+            return acc+curr
+        })
+       },
+        grades(){
+            return [86,93,65]
+        },
         me(){
             return{
                 id : 'abc123',
@@ -225,6 +253,15 @@ const resolvers = {
                 age: 32,
                 employed: true,  
                 gpa: null
+            }
+        },
+
+        post(){
+            return{
+                id: 123336,
+                title: 'FaceBook',
+                body: 'WhatsApp is taking off the privacy rules',
+                published : true
             }
         },
        
