@@ -46,6 +46,11 @@ const movies = [
         name: 'Delhi crimes',
         likes: 0,
         banner: 'https://i1.wp.com/feminisminindia.com/wp-content/uploads/2019/04/DC.jpg?fit=875%2C583&ssl=1'
+    },
+    {
+        name: 'Delhi crimes',
+        likes: 0,
+        banner: 'https://i1.wp.com/feminisminindia.com/wp-content/uploads/2019/04/DC.jpg?fit=875%2C583&ssl=1'
     }
 ]
 
