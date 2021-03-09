@@ -93,6 +93,7 @@ const typeDefs =
         age: Int!
         employed: Boolean!
         gpa: Float
+        posts: [Post!]!
 
     }
     type Post{
@@ -163,6 +164,13 @@ const resolvers = {
         author(parent,args,ctx,info){
             return users.find((k) => {
                 return k.id === parent.author
+            })
+        }
+    },
+    User:{
+        posts(parent,args,ctx,info){
+            return posts.filter((post) => {
+                return post.author === parent.id
             })
         }
     }
