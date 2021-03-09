@@ -59,18 +59,21 @@ const movies = [
             id: '12333456',
             title: 'Elections',
             body: 'There are new political parties in India',
-            published: true
+            published: true,
+            author: '1'
         },
         {
             id: '8999',
             title: 'Farm laws',
             body: 'Farm laws are against the farmers in India',
-            published: true
+            published: true,
+            author: '2'
         },{
             id: '77756',
             title: 'ReactJs',
             body: 'Facebook created by reactjs',
-            published: true
+            published: true,
+            author: '2'
         }
     ]
 
@@ -82,7 +85,7 @@ const typeDefs =
         movies(sortby: String): [Moviedetails!]!
         me: User!
         post: Post!
-        posts(keyword: String):[Post!]!
+        posts(query: String):[Post!]!
     }
     type User{
         id: ID!
@@ -97,6 +100,7 @@ const typeDefs =
         title: String!
         body: String!
         published : Boolean!
+        author: User!
     }
     type Moviedetails{
         name: String!
@@ -111,10 +115,10 @@ const resolvers = {
     Query: {
         user(parent,args,ctx,info){
             if(!args.query){
-                return user 
+                return users 
             }
-            return users.filter((user) => {
-                return user.name.toLowerCase().includes(args.query.toLowerCase())
+            return users.filter((p) => {
+                return p.name.toLowerCase().includes(args.query.toLowerCase())
             })
         },
 
@@ -128,11 +132,11 @@ const resolvers = {
         },
 
         posts(parent,args,ctx,info){
-            if(!args.keyword){
+            if(!args.query){
                 return posts
             }
             return posts.filter((x) => {
-                return x.body.toLocaleLowerCase().includes(args.keyword.toLowerCase())
+                return x.body.toLocaleLowerCase().includes(args.query.toLowerCase())
             })
         },
       
@@ -153,9 +157,14 @@ const resolvers = {
                 body: 'WhatsApp is taking off the privacy rules',
                 published : true
             }
-        },
-       
-       
+        }
+    },
+    Post: {
+        author(parent,args,ctx,info){
+            return users.find((k) => {
+                return k.id === parent.author
+            })
+        }
     }
 }
 
