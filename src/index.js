@@ -1,5 +1,5 @@
 import {GraphQLServer} from 'graphql-yoga';
-
+import uuidv4 from 'uuid/v4';
 // type def (schema)
 
 const users=[
@@ -76,7 +76,32 @@ const movies = [
             author: '2'
         }
     ]
-
+const comments=[
+    {
+        id: '456',
+        author: '1',
+        post:'8999',
+        text: 'These are internal issues'
+    },
+    {
+        id: '789',
+        author: '1',
+        post:'77756',
+        text: 'Elections in WestBengal'
+    },
+    {
+        id: '741',
+        author: '2',
+        post:'8999',
+        text: 'Angular is created by Google'
+    },
+    {
+        id: '963',
+        author: '3',
+        post:'77756',
+        text: 'This is graphql'
+    }
+]
 
 const typeDefs = 
     `
@@ -86,14 +111,22 @@ const typeDefs =
         me: User!
         post: Post!
         posts(query: String):[Post!]!
+        comments: [Comment!]!
     }
+
+    type Mutation{
+        createUser(name: String!, email: String, age: Int) : User!
+    }
+
     type User{
         id: ID!
         name: String!
-        age: Int!
+        age: Int
+        email: String!
         employed: Boolean!
         gpa: Float
         posts: [Post!]!
+        comments: [Comment!]!
 
     }
     type Post{
@@ -102,11 +135,18 @@ const typeDefs =
         body: String!
         published : Boolean!
         author: User!
+        comments: [Comment!]!
     }
     type Moviedetails{
         name: String!
         banner: String!
         likes: Int!
+    }
+    type Comment{
+        id: ID!
+        text: String!
+        author: User!
+        post: Post!
     }
     `
 
@@ -121,6 +161,10 @@ const resolvers = {
             return users.filter((p) => {
                 return p.name.toLowerCase().includes(args.query.toLowerCase())
             })
+        },
+
+        comments(parent,args,ctx,info){
+            return comments
         },
 
         movies(parent,args,ctx,info){
@@ -160,10 +204,34 @@ const resolvers = {
             }
         }
     },
+    Mutation: {
+        createUser(parent,args,ctx,info){
+            const emailTaken = users.some((k)=> {
+            return k.email === args.email
+            })
+            if(emailTaken){
+                throw new Error ('Email exist')
+            }
+            const x={
+                id: uuidv4(),
+                name: args.name,
+                email: args.email,
+                age: args.age
+            }
+            users.push(x)
+            
+            return x
+        }
+    },
     Post: {
         author(parent,args,ctx,info){
             return users.find((k) => {
                 return k.id === parent.author
+            })
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter((comment) => {
+                return comment.post === parent.id
             })
         }
     },
@@ -171,6 +239,23 @@ const resolvers = {
         posts(parent,args,ctx,info){
             return posts.filter((post) => {
                 return post.author === parent.id
+            })
+        },
+        comments(parent,args,ctx,info){
+            return comments.filter((c) => {
+               return c.author === parent.id
+            })
+        }
+    },
+    Comment: {
+        author(parent,args,ctx,info){
+            return users.find((c) => {
+                return c.id === parent.author 
+            })
+        },
+        post(parent, args, ctx, info) {
+            return posts.find((post) => {
+                return post.id === parent.post
             })
         }
     }
